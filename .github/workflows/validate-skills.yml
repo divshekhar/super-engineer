@@ -1,0 +1,62 @@
+name: Validate skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check every skill folder has a valid SKILL.md
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+
+          # A "skill folder" is any top-level dir that isn't infrastructure.
+          ignore_re='^(\.git|\.github|node_modules)$'
+
+          for dir in */; do
+            name="${dir%/}"
+            [[ "$name" =~ $ignore_re ]] && continue
+
+            skill="$dir/SKILL.md"
+            if [[ ! -f "$skill" ]]; then
+              echo "::error file=$dir::Skill folder '$name' is missing SKILL.md"
+              fail=1
+              continue
+            fi
+
+            # Folder name must be kebab-case.
+            if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+              echo "::error file=$skill::Skill folder '$name' must be kebab-case"
+              fail=1
+            fi
+
+            # SKILL.md must declare a trigger.
+            if ! grep -qiE '##[[:space:]]*Trigger' "$skill"; then
+              echo "::error file=$skill::'$name/SKILL.md' must declare a '## Trigger' line"
+              fail=1
+            fi
+
+            # SKILL.md must have a top-level title.
+            if ! grep -qE '^#[[:space:]]' "$skill"; then
+              echo "::error file=$skill::'$name/SKILL.md' must start with a '# Title'"
+              fail=1
+            fi
+
+            # Each skill should be listed in the README table.
+            if ! grep -q "$name" README.md; then
+              echo "::warning file=README.md::Skill '$name' is not referenced in README.md"
+            fi
+          done
+
+          if [[ "$fail" -ne 0 ]]; then
+            echo "Skill validation failed."
+            exit 1
+          fi
+          echo "All skills valid."

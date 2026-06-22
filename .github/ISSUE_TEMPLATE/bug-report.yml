@@ -1,0 +1,32 @@
+name: 🐞 Bug report
+description: Report a broken command, dead link, or incorrect advice in a skill
+title: "[Bug] <short description>"
+labels: ["bug"]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Which skill?
+      placeholder: project-setup
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+      description: Describe the broken command, dead link, or incorrect/outdated advice.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should it say or do instead?
+    validations:
+      required: false
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment (if relevant)
+      description: OS, language/tool versions, Claude Code version.
+    validations:
+      required: false

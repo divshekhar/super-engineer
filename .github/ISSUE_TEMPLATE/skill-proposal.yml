@@ -1,0 +1,51 @@
+name: 💡 Skill proposal
+description: Propose a new skill for the collection
+title: "[Skill] <short name>"
+labels: ["skill-proposal"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Skill name
+      description: Kebab-case, e.g. react-testing
+      placeholder: my-skill-name
+    validations:
+      required: true
+  - type: input
+    id: trigger
+    attributes:
+      label: Trigger
+      description: How would this skill be invoked?
+      placeholder: "/my-skill-name"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What does it do?
+      description: One paragraph — what task it improves and who it's for.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this worth a skill?
+      description: What does an agent get wrong without it? Why is general knowledge not enough?
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Language/framework-specific
+        - Stack-agnostic / universal
+    validations:
+      required: true
+  - type: checkboxes
+    id: intent
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to write this skill myself.
+        - label: I'd like someone else to pick it up.
